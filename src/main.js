@@ -5,6 +5,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Dialog from 'material-ui/lib/dialog';
 import AppBar from 'material-ui/lib/app-bar';
+import Card from 'material-ui/lib/card';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardText from 'material-ui/lib/card/card-text';
+import CardTitle from 'material-ui/lib/card/card-title';
+import Avatar from 'material-ui/lib/avatar';
+import FlatButton from 'material-ui/lib/flat-button';
 import RaisedButton from 'material-ui/lib/raised-button';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
@@ -32,12 +41,15 @@ var req = https.get('https://api.instagram.com/v1/media/popular?access_token='+a
 req.end();
 
 function loadPopular(imgs) {
-  _.each(imgs.data, function(img) {
-    console.log(img.images.standard_resolution.url);
-    let i = new Image();
-    i.src = img.images.standard_resolution.url;
-    document.querySelector('.main').appendChild(i);
-  });
+  ReactDOM.render(<Main imgs={imgs.data}/>, document.querySelector('#appBar'));
+
+
+  // _.each(imgs.data, function(img) {
+    console.log(imgs.data);
+  //   let i = new Image();
+  //   i.src = img.images.standard_resolution.url;
+  //   document.querySelector('.main').appendChild(i);
+  // });
 };
 
 // needle.get('https://api.instagram.com/v1/media/popular?access_token='+accessToken, function(err, rsp) {
@@ -51,6 +63,7 @@ const Main = React.createClass({
   },
 
   getInitialState () {
+    console.log(this.props);
     return {
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
     };
@@ -71,10 +84,9 @@ const Main = React.createClass({
   },
 
   render() {
-
     let containerStyle = {
       textAlign: 'center',
-      paddingTop: '200px',
+      paddingTop: '20px',
     };
 
     let standardActions = [
@@ -83,20 +95,23 @@ const Main = React.createClass({
 
     return (
       <div style={containerStyle}>
-        <Dialog
-          title="Super Secret Password"
-          actions={standardActions}
-          ref="superSecretPasswordDialog">
-          1-2-3-4-5
-        </Dialog>
-
-        <h1>material-ui</h1>
-        <h2>example project</h2>
-        <AppBar />
-        <RaisedButton label="Super Secret Password" primary={true} onTouchTap={this._handleTouchTap} />
-
-      </div>
-    );
+      {
+        this.props.imgs.map(function(img) {
+          return (
+            <div>
+              <img src={img.images.standard_resolution.url}/>
+              <div>
+                  <Avatar src={img.user.profile_picture}/>
+                  <div>
+                    <p>{img.caption && img.caption.text}</p>
+                  </div>
+              </div>
+            </div>
+          )
+          // return <Avatar src={img.user.profile_picture}/>
+        })
+      }
+      </div>);
   },
 
   _handleTouchTap() {
@@ -105,7 +120,7 @@ const Main = React.createClass({
 
 });
 
-ReactDOM.render(<Main />, document.querySelector('#appBar'));
+// ReactDOM.render(<Main />, document.querySelector('#appBar'));
 
 console.log(Main);
 module.exports = Main;

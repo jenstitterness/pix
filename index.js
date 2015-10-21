@@ -75,8 +75,9 @@ function login() {
 
 function createMainWindow() {
 	const win = new BrowserWindow({
-		width: 600,
-		height: 400
+		width: 1200,
+		height: 800,
+		center: true
 	});
 
 	if (process.env['NODE_ENV'] == 'dev') {
