@@ -5,13 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Dialog from 'material-ui/lib/dialog';
 import AppBar from 'material-ui/lib/app-bar';
-import Card from 'material-ui/lib/card';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardExpandable from 'material-ui/lib/card/card-expandable';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardText from 'material-ui/lib/card/card-text';
-import CardTitle from 'material-ui/lib/card/card-title';
 import Avatar from 'material-ui/lib/avatar';
 import FlatButton from 'material-ui/lib/flat-button';
 import RaisedButton from 'material-ui/lib/raised-button';
@@ -19,6 +12,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
 
+import ImgCard from './ImgCard';
 
 var accessToken = ipc.sendSync('getAccessToken');
 
@@ -41,20 +35,9 @@ var req = https.get('https://api.instagram.com/v1/media/popular?access_token='+a
 req.end();
 
 function loadPopular(imgs) {
-  ReactDOM.render(<Main imgs={imgs.data}/>, document.querySelector('#appBar'));
-
-
-  // _.each(imgs.data, function(img) {
+  ReactDOM.render(<Main imgs={imgs.data}/>, document.querySelector('#feedContainer'));
     console.log(imgs.data);
-  //   let i = new Image();
-  //   i.src = img.images.standard_resolution.url;
-  //   document.querySelector('.main').appendChild(i);
-  // });
 };
-
-// needle.get('https://api.instagram.com/v1/media/popular?access_token='+accessToken, function(err, rsp) {
-//   console.log(rsp);
-// });
 
 const Main = React.createClass({
 
@@ -86,7 +69,8 @@ const Main = React.createClass({
   render() {
     let containerStyle = {
       textAlign: 'center',
-      paddingTop: '20px',
+      paddingTop: '10px',
+      background: '#ddd'
     };
 
     let standardActions = [
@@ -99,16 +83,9 @@ const Main = React.createClass({
         this.props.imgs.map(function(img) {
           return (
             <div>
-              <img src={img.images.standard_resolution.url}/>
-              <div>
-                  <Avatar src={img.user.profile_picture}/>
-                  <div>
-                    <p>{img.caption && img.caption.text}</p>
-                  </div>
-              </div>
+              <ImgCard img={img} />
             </div>
           )
-          // return <Avatar src={img.user.profile_picture}/>
         })
       }
       </div>);
@@ -120,7 +97,4 @@ const Main = React.createClass({
 
 });
 
-// ReactDOM.render(<Main />, document.querySelector('#appBar'));
-
-console.log(Main);
 module.exports = Main;

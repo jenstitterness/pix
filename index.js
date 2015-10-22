@@ -14,8 +14,6 @@ var appConfig = fs.readFileSync('./app.config', 'utf8', function(err, data) {
 
 app.settings = JSON.parse(appConfig);
 
-console.log("2", app.settings);
-
 ipc.on('getAccessToken', function(evt) {
 	evt.returnValue = app.settings.accessToken;
 	return evt;
@@ -43,7 +41,7 @@ function onClosed() {
 function login() {
 	const win = new BrowserWindow({
 		width: 600,
-		height: 400
+		height: 400,
 	});
 	win.webContents.on('did-get-redirect-request', function(evt, old, newUrl) {
 		var parsedUrl = url.parse(newUrl);
@@ -75,9 +73,11 @@ function login() {
 
 function createMainWindow() {
 	const win = new BrowserWindow({
-		width: 1200,
+		width: 640,
+		resizable: false,
 		height: 800,
-		center: true
+		center: true,
+		title: "Pix"
 	});
 
 	if (process.env['NODE_ENV'] == 'dev') {
