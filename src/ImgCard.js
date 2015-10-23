@@ -19,7 +19,6 @@ const ImgCard = React.createClass({
     },
 
     getInitialState () {
-      console.log(this.props);
       return {
         muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
       };

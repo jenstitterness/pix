@@ -12,42 +12,55 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
 
+import Header from './Header';
 import ImgCard from './ImgCard';
+
 
 var accessToken = ipc.sendSync('getAccessToken');
 
 console.log(accessToken);
 
-var req = https.get('https://api.instagram.com/v1/media/popular?access_token='+accessToken, function(res) {
-  console.log("statusCode: ", res.statusCode);
-    console.log("headers: ", res.headers);
-    res.setEncoding('utf8');
-    var popularJsonRes = '';
-    res.on('data', function(d) {
-      popularJsonRes += d;
-    }).on('end', function() {
-      popularJsonRes = JSON.parse(popularJsonRes);
-      console.log(popularJsonRes);
-      loadPopular(popularJsonRes);
-    });
+
+
+
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded');
+
+
+    loadApp();
 });
 
-req.end();
+function loadApp() {
+  loadPopular();
+  // loadProfileFeed();
 
-function loadPopular(imgs) {
-  ReactDOM.render(<Main imgs={imgs.data}/>, document.querySelector('#feedContainer'));
-    console.log(imgs.data);
+
+
+  ReactDOM.render(<Header profile={loadProfileFeed} popular={loadPopular} />, document.getElementById('header'));
 };
 
-const Main = React.createClass({
+function loadPopular(imgs) {
+  ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+  ReactDOM.render(<Feed accessToken={accessToken} src="https://api.instagram.com/v1/media/popular?access_token=" />, document.querySelector('#feedContainer'));
+};
+
+function loadProfileFeed() {
+  console.log("accessToken", accessToken);
+  ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+  ReactDOM.render(<Feed accessToken={accessToken} src="https://api.instagram.com/v1/users/self/feed?access_token=" />, document.querySelector('#feedContainer'));
+  console.log('loadProfileFeed');
+
+}
+
+const Feed = React.createClass({
 
   childContextTypes: {
     muiTheme: React.PropTypes.object,
   },
 
   getInitialState () {
-    console.log(this.props);
     return {
+      res: {},
       muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
     };
   },
@@ -56,6 +69,24 @@ const Main = React.createClass({
     return {
       muiTheme: this.state.muiTheme,
     };
+  },
+
+  componentDidMount() {
+    var self = this;
+    var req = https.get(this.props.src + this.props.accessToken, function(res) {
+        res.setEncoding('utf8');
+        var popularJsonRes = '';
+        res.on('data', function(d) {
+          popularJsonRes += d;
+        }).on('end', function() {
+          if (self.isMounted()) {
+            self.setState({
+              res: JSON.parse(popularJsonRes)
+            });
+          }
+        }.bind(this));
+    });
+    req.end();
   },
 
   componentWillMount() {
@@ -69,18 +100,17 @@ const Main = React.createClass({
   render() {
     let containerStyle = {
       textAlign: 'center',
-      paddingTop: '10px',
+      paddingTop: '40px',
       background: '#ddd'
     };
 
     let standardActions = [
       { text: 'Okay' },
     ];
-
     return (
       <div style={containerStyle}>
       {
-        this.props.imgs.map(function(img) {
+        this.state.res.data && this.state.res.data.map(function(img, i) {
           return (
             <div>
               <ImgCard img={img} />
@@ -88,8 +118,20 @@ const Main = React.createClass({
           )
         })
       }
+
       </div>);
   },
+
+/*
+{
+  this.state.res.data.map(function(img) {
+    return (
+      <div>
+      </div>
+    )
+  })
+}
+*/
 
   _handleTouchTap() {
     this.refs.superSecretPasswordDialog.show();
@@ -97,4 +139,4 @@ const Main = React.createClass({
 
 });
 
-module.exports = Main;
+module.exports = Feed;
