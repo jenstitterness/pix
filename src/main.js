@@ -16,12 +16,38 @@ import Header from './Header';
 import ImgCard from './ImgCard';
 
 
-var accessToken = ipc.sendSync('getAccessToken');
-
-console.log(accessToken);
 
 
+var app = window.app = {
+  accessToken: "",
 
+  loadApp: function() {
+    loadPopular();
+    ReactDOM.render(<Header profile={loadProfileFeed} popular={loadPopular} />, document.getElementById('header'));
+  },
+
+  loadPopular: function() {
+    ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+    ReactDOM.render(<Feed accessToken={app.accessToken} src="https://api.instagram.com/v1/media/popular?access_token=" />, document.querySelector('#feedContainer'));
+  },
+
+  loadProfileFeed: function() {
+    ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+    ReactDOM.render(<Feed accessToken={app.accessToken} src="https://api.instagram.com/v1/users/self/feed?access_token=" />, document.querySelector('#feedContainer'));
+    console.log('loadProfileFeed');
+  },
+
+  loadUserFeed: function(id) {
+    ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+    var userFeedUrl = "https://api.instagram.com/v1/users/"+id+"/media/recent/?access_token=";
+    ReactDOM.render(<Feed accessToken={app.accessToken} src={userFeedUrl} />, document.querySelector('#feedContainer'));
+    console.log('loadUserFeed');
+  }
+};
+
+app.accessToken = ipc.sendSync('getAccessToken');
+
+console.log(app.accessToken);
 
 window.addEventListener('DOMContentLoaded', function() {
     console.log('DOMContentLoaded');
@@ -41,13 +67,13 @@ function loadApp() {
 
 function loadPopular(imgs) {
   ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
-  ReactDOM.render(<Feed accessToken={accessToken} src="https://api.instagram.com/v1/media/popular?access_token=" />, document.querySelector('#feedContainer'));
+  ReactDOM.render(<Feed accessToken={app.accessToken} src="https://api.instagram.com/v1/media/popular?access_token=" />, document.querySelector('#feedContainer'));
 };
 
 function loadProfileFeed() {
-  console.log("accessToken", accessToken);
+  console.log("accessToken", app.accessToken);
   ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
-  ReactDOM.render(<Feed accessToken={accessToken} src="https://api.instagram.com/v1/users/self/feed?access_token=" />, document.querySelector('#feedContainer'));
+  ReactDOM.render(<Feed accessToken={app.accessToken} src="https://api.instagram.com/v1/users/self/feed?access_token=" />, document.querySelector('#feedContainer'));
   console.log('loadProfileFeed');
 
 }
@@ -98,6 +124,7 @@ const Feed = React.createClass({
   },
 
   render() {
+    console.log('feed state:', this.state);
     let containerStyle = {
       textAlign: 'center',
       paddingTop: '40px',
@@ -112,7 +139,7 @@ const Feed = React.createClass({
       {
         this.state.res.data && this.state.res.data.map(function(img, i) {
           return (
-            <div>
+            <div key={i}>
               <ImgCard img={img} />
             </div>
           )

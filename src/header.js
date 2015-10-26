@@ -38,10 +38,13 @@ const Header = React.createClass({
     console.log(this);
     return (
       <div style={headerStyle}>
-        <button label="Popular" onClick={this.props.popular}>Popular</button>
-        <button label="Profile" onClick={this.props.profile}>Profile</button>
-        <RaisedButton label="Popular" primary={false} onClick={this.props.popular} />
-        <RaisedButton label="Profile" primary={false} onClick={this.props.profile} />
+        <Toolbar>
+          <ToolbarGroup key={0} float="left">
+          <RaisedButton label="Popular" primary={false} onClick={this.props.popular} />
+          <RaisedButton label="Profile" primary={false} onClick={this.props.profile} />
+          </ToolbarGroup>
+        </Toolbar>
+
       </div>
     );
   }

@@ -37,10 +37,15 @@ const ImgCard = React.createClass({
 
       this.setState({muiTheme: newMuiTheme});
     },
+
+  clickUserLink: function() {
+        console.log('user link clicked', this.props);
+        window.app.loadUserFeed(this.props.img.user.id);
+  },
   render: function() {
     let cardStyle = {
       margin: "20px",
-      "max-width": "640px"
+      maxWidth: "640px"
     };
 
     let headerStyle = {
@@ -54,11 +59,13 @@ const ImgCard = React.createClass({
       fontSize: '24px',
       margin: '15px',
     };
-
+var self = this;
     return (
+      <div>
+
       <Card style={cardStyle}>
-        <Avatar style={headerStyle} src={this.props.img.user.profile_picture}></Avatar>
-        <h3 style={headerTextStyle}>{this.props.img.user.username}</h3>
+        <CardHeader  onClick={this.clickUserLink} title={this.props.img.user.username}
+        avatar={<Avatar src={this.props.img.user.profile_picture}></Avatar>}/>
 
         <CardMedia>
           <img src={this.props.img.images.standard_resolution.url}/>
@@ -68,6 +75,7 @@ const ImgCard = React.createClass({
           {this.props.img.caption && this.props.img.caption.text}
         </CardText>
       </Card>
+      </div>
     );
   }
 });
