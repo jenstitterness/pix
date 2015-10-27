@@ -60,6 +60,15 @@ const ImgCard = React.createClass({
       margin: '15px',
     };
 var self = this;
+
+    let element;
+
+    if (this.props.img.type === 'video') {
+      element = <video controls src={this.props.img.videos.standard_resolution.url} />;
+    } else if (this.props.img.type === "image") {
+      element = <img src={this.props.img.images.standard_resolution.url} />;
+    }
+
     return (
       <div>
 
@@ -68,11 +77,14 @@ var self = this;
         avatar={<Avatar src={this.props.img.user.profile_picture}></Avatar>}/>
 
         <CardMedia>
-          <img src={this.props.img.images.standard_resolution.url}/>
+          {element}
         </CardMedia>
 
         <CardText>
           {this.props.img.caption && this.props.img.caption.text}
+        </CardText>
+        <CardText expandable={true} initiallyExpanded={true}>
+          {this.props.img.link}
         </CardText>
       </Card>
       </div>
