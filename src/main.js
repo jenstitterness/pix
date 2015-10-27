@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import $ from 'jquery';
 import ipc from 'ipc';
 import React from 'react';
 import ReactDOM from 'react-dom';
