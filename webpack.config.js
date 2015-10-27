@@ -4,7 +4,7 @@ var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 module.exports = {
 	entry: {
     module: './src/main.js',
-    common: ['react', 'react-dom', 'material-ui/lib/index.js', 'ipc', 'https', 'lodash', './src/ImgCard.js']
+    common: ['react', 'react-dom', 'material-ui/lib/index.js', 'ipc', 'https', 'lodash', 'jquery', './src/ImgCard.js']
   },
 	// entry: ,
 	output: {
