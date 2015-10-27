@@ -1,4 +1,6 @@
 import React from 'react';
+import https from 'https';
+import $ from 'jquery';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
@@ -11,6 +13,7 @@ import CardActions from 'material-ui/lib/card/card-actions';
 import CardExpandable from 'material-ui/lib/card/card-expandable';
 import Avatar from 'material-ui/lib/avatar';
 import FlatButton from 'material-ui/lib/flat-button';
+import FontIcon from 'material-ui/lib/font-icon';
 
 const ImgCard = React.createClass({
 
@@ -59,6 +62,19 @@ const ImgCard = React.createClass({
       fontSize: '24px',
       margin: '15px',
     };
+
+    let titleBar = {
+      float: 'left',
+      width: '100%',
+      fontSize: '12px'
+    };
+
+    let titleBarIcons = {
+      float: 'left',
+      margin: '12px'
+    };
+
+
 var self = this;
     return (
       <div>
@@ -70,6 +86,21 @@ var self = this;
         <CardMedia>
           <img src={this.props.img.images.standard_resolution.url}/>
         </CardMedia>
+
+
+        <CardTitle style={titleBar}>
+          <div style={titleBarIcons}>
+            {(this.props.img.user_has_liked
+                ? <FontIcon className="material-icons" color={Colors.red500}>&#xE87D;</FontIcon>
+                : <FontIcon className="material-icons" color={Colors.red500}>&#xE87E;</FontIcon>
+            )}
+            <div>{this.props.img.likes.count} likes</div>
+          </div>
+          <div style={titleBarIcons}>
+            <FontIcon className="material-icons" color={Colors.blue500}>&#xE0B9;</FontIcon>
+            <div>{this.props.img.comments.count} comments</div>
+          </div>
+        </CardTitle>
 
         <CardText>
           {this.props.img.caption && this.props.img.caption.text}
