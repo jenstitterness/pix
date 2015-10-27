@@ -9,7 +9,9 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
+import CircularProgress from 'material-ui/lib/circular-progress';
 import ImgCard from './ImgCard';
+
 
 const Feed = React.createClass({
 
@@ -60,15 +62,24 @@ const Feed = React.createClass({
     console.log('feed state:', this.state);
     let containerStyle = {
       textAlign: 'center',
-      paddingTop: '40px',
-      background: '#ddd'
+      paddingTop: '50px',
+      background: '#ddd',
+      height: '100%'
     };
 
     let standardActions = [
       { text: 'Okay' },
     ];
+
+    let loading;
+    if (!this.state.res.data) {
+      loading = <CircularProgress id="circularProgress" mode="indeterminate" />;
+    }
+
     return (
       <div style={containerStyle}>
+      {loading}
+
       {
         this.state.res.data && this.state.res.data.map(function(img, i) {
           return (
@@ -78,7 +89,6 @@ const Feed = React.createClass({
           )
         })
       }
-
       </div>);
   },
   _handleTouchTap() {
