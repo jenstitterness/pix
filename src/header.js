@@ -9,10 +9,15 @@ import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import RaisedButton from 'material-ui/lib/raised-button';
+import TextField from 'material-ui/lib/text-field';
 
 const Header = React.createClass({
   refreshButton: function() {
     app.refreshFeed();
+  },
+
+  search: function(evt) {
+    app.loadSearchList(evt.target.value);
   },
 
   getStyles: function() {
@@ -23,6 +28,9 @@ const Header = React.createClass({
         },
         pullRight: {
           float: "right"
+        },
+        searchBar: {
+          width: "200px"
         }
       };
 
@@ -47,9 +55,15 @@ const Header = React.createClass({
           <ToolbarGroup key={0} float="left">
           <RaisedButton label="Popular" primary={false} onClick={this.props.popular} />
           <RaisedButton label="Profile" primary={false} onClick={this.props.profile} />
+          <FontIcon className="material-icons refreshIcon" onClick={this.refreshButton}>&#xE863;</FontIcon>
+
+
+
           </ToolbarGroup>
           <ToolbarGroup key={1} float="right">
-          <FontIcon className="material-icons" onClick={this.refreshButton}>&#xE863;</FontIcon>
+          <div className="searchBar"styles={styles.searchBar}>
+            <TextField floatingLabelText="Search" onBlur={this.search}/>
+          </div>
           </ToolbarGroup>
         </Toolbar>
 

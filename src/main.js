@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 
 import Header from './Header';
 import Feed from './Feed';
+import SearchList from './SearchList';
 
 var app = window.app = {
   accessToken: "",
@@ -29,7 +30,7 @@ var app = window.app = {
 
   loadApp: function() {
     this.loadPopular();
-    ReactDOM.render(<Header profile={this.loadProfileFeed} popular={this.loadPopular} />, document.getElementById('header'));
+    ReactDOM.render(<Header search={this.loadSearchFeed} profile={this.loadProfileFeed} popular={this.loadPopular} />, document.getElementById('header'));
   },
 
   loadPopular: function() {
@@ -53,6 +54,25 @@ var app = window.app = {
     var userFeedUrl = "https://api.instagram.com/v1/users/"+id+"/media/recent/?access_token=";
     ReactDOM.render(<Feed accessToken={app.accessToken} src={userFeedUrl} />, document.querySelector('#feedContainer'));
     console.log('loadUserFeed');
+  },
+
+  loadSearchList: function(search) {
+    if (search === "") {
+      app.loadPopular();
+      return;
+    }
+    app.currentFeed = "search";
+    ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+    const searchStr = "https://api.instagram.com/v1/tags/search?q="+search+"&access_token=";
+    ReactDOM.render(<SearchList accessToken={app.accessToken} src={searchStr} />, document.querySelector('#feedContainer'));
+    console.log('loadSearchFeed');
+  },
+
+  loadTagFeed: function(tag) {
+    app.currentFeed = "tag";
+    ReactDOM.unmountComponentAtNode(document.querySelector('#feedContainer'));
+    const tagStr = "https://api.instagram.com/v1/tags/"+tag+"/media/recent?access_token=";
+    ReactDOM.render(<Feed accessToken={app.accessToken} src={tagStr} />, document.querySelector('#feedContainer'));
   }
 };
 
